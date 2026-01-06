@@ -218,6 +218,28 @@
     </div>
   </section>
 
+  <!-- Random Ads Section -->
+  <section class="content-section">
+    <h2 class="section-title">Zufaellige Inserate</h2>
+    <div class="cards-container" id="random-ads-container">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="section-cta-small">
+      <a href="https://6love.ch/de/ads" class="cta-button-small">Mehr entdecken</a>
+    </div>
+  </section>
+
+  <!-- Most Popular Profiles Section -->
+  <section class="content-section">
+    <h2 class="section-title">Beliebteste Profile</h2>
+    <div class="cards-container" id="profiles-container">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="section-cta-small">
+      <a href="https://6love.ch/de/community" class="cta-button-small">Community entdecken</a>
+    </div>
+  </section>
+
   <!-- Live Banners Section -->
   <section class="live-banners-section">
     <h2 class="live-banners-title">Aktuelle Werbekunden</h2>
@@ -329,8 +351,46 @@
       }
     }
 
+    // Zufaellige Inserate
+    async function fetchRandomAds() {
+      const container = document.getElementById('random-ads-container');
+      try {
+        const response = await fetch(`${API_BASE}/api/listings/dynamic-random/`);
+        if (!response.ok) throw new Error('Fehler');
+        const ads = await response.json();
+        container.innerHTML = '';
+        ads.slice(0, 4).forEach(ad => {
+          const imageUrl = ad.gallery_listview?.image?.md ? `${API_BASE}/${ad.gallery_listview.image.md}` : 'https://6love.ch/assets/images/6lovepink.svg';
+          const card = document.createElement('div');
+          card.className = 'content-card';
+          card.innerHTML = `<a href="https://6love.ch/${LANG}/ads/detail/${ad.id}/${ad.slug}" class="card-link"><div class="card-image-container"><img src="${imageUrl}" alt="${ad.title}" class="card-image" loading="lazy"></div><div class="card-content"><h3 class="card-title">${ad.title}</h3><div class="card-tags">${ad.address?.city ? `<span class="card-tag">${ad.address.city}</span>` : ''}</div></div></a>`;
+          container.appendChild(card);
+        });
+      } catch (e) { container.innerHTML = '<p class="error-message">Laden fehlgeschlagen</p>'; }
+    }
+
+    // Beliebteste Profile
+    async function fetchMostHitsProfiles() {
+      const container = document.getElementById('profiles-container');
+      try {
+        const response = await fetch(`${API_BASE}/api/profiles/most-hits/`);
+        if (!response.ok) throw new Error('Fehler');
+        const profiles = await response.json();
+        container.innerHTML = '';
+        profiles.slice(0, 4).forEach(profile => {
+          const imageUrl = profile.picture?.card ? `${API_BASE}${profile.picture.card}` : 'https://6love.ch/assets/images/6lovepink.svg';
+          const card = document.createElement('div');
+          card.className = 'content-card';
+          card.innerHTML = `<a href="https://6love.ch/${LANG}/community/${profile.slug}" class="card-link"><div class="card-image-container"><img src="${imageUrl}" alt="${profile.user?.username || 'Profil'}" class="card-image" loading="lazy"></div><div class="card-content"><h3 class="card-title">${profile.user?.username || 'Anonym'}</h3><div class="card-tags"><span class="card-tag">${profile.views || 0} Views</span></div></div></a>`;
+          container.appendChild(card);
+        });
+      } catch (e) { container.innerHTML = '<p class="error-message">Laden fehlgeschlagen</p>'; }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       fetchPremiumAds();
+      fetchRandomAds();
+      fetchMostHitsProfiles();
       fetchLiveBanners();
     });
 
