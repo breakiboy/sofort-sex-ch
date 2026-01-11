@@ -218,6 +218,17 @@
     </div>
   </section>
 
+  <!-- Massage Section -->
+  <section class="content-section">
+    <h2 class="section-title">Erotik Massagen</h2>
+    <div class="cards-container" id="massage-ads-container">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="section-cta-small">
+      <a href="https://6love.ch/de/ads?category=5" class="cta-button-small">Alle Massagen</a>
+    </div>
+  </section>
+
   <!-- Random Ads Section -->
   <section class="content-section">
     <h2 class="section-title">Zufaellige Inserate</h2>
@@ -389,6 +400,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       fetchPremiumAds();
+      fetchMassageAds();
       fetchRandomAds();
       fetchMostHitsProfiles();
       fetchLiveBanners();
